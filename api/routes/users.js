@@ -15,10 +15,11 @@ const apiLimitMin = rateLimit({
 })
 
 //AUTHENTICATION CHECK 
-router.get("/authenticationcheck", tokenVerify, (req, res, next) => {
+router.get("/authenticationcheck", apiLimitMin, tokenVerify, (req, res, next) => {
+    req.apiLimitMin;
     res.send("You are logged!")
 });
- 
+
 //USER CHECK
 router.get("/usercheck/:id", apiLimitMin, userVerify, (req, res, next) => {
     req.apiLimitMin;
@@ -26,7 +27,8 @@ router.get("/usercheck/:id", apiLimitMin, userVerify, (req, res, next) => {
 });
 
 //ADMIN CHECK
-router.get("/admincheck/:id", adminVerify, (req, res, next) => {
+router.get("/admincheck/:id", apiLimitMin, adminVerify, (req, res, next) => {
+    req.apiLimitMin;
     res.send("hello admin");
 });
 
