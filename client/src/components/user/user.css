@@ -54,6 +54,12 @@
     top: -20px;
 }
 
+.content p {
+    color: #121212;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+}
+
 .loginButton {
     width: 212px;
     height: 35px;

@@ -47,7 +47,7 @@ const Navbar = () => {
                                     <div className="subMenu">  
                                         <li><Link to={`/user/${user._id}`} >{ user.username }</Link></li>
                                         <li><Link to="/surveys/mysurveys">My Surveys</Link></li>
-                                        <li><Link to="/">Survey History</Link></li> 
+                                        <li><Link to="/surveys/surveyhistory">Survey History</Link></li> 
                                       {user.isAdmin === 1 ? <li><Link to="/surveys/pending">Pending Surveys</Link></li> : ''}  
                                     </div> 
                                 </li>

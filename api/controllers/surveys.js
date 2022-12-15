@@ -1,9 +1,7 @@
 import Surveys from "../models/Surveys.js"
 import Votes from "../models/Votes.js";
 import { createError } from "../utils/error.js";
-
-
-
+ 
 
 export const createSurvey = async (req, res, next) => {
     const newSurvey = new Surveys(req.body)
@@ -16,6 +14,7 @@ export const createSurvey = async (req, res, next) => {
     }
 }
 
+//update survey
 export const updateSurvey = async (req, res, next) => {
     try {
         const updatedSurvey = await Surveys.findByIdAndUpdate(
@@ -29,7 +28,7 @@ export const updateSurvey = async (req, res, next) => {
     }
 }
  
-
+//update ratings
 export const updateRatings = async (req, res, next) => {
 
     const arr = req.body;
@@ -74,6 +73,7 @@ export const updateRatings = async (req, res, next) => {
 
 };
 
+//delete survey
 export const deleteSurvey = async (req, res, next) => {
     try {
         await Surveys.findByIdAndDelete(req.params.id)
@@ -83,6 +83,7 @@ export const deleteSurvey = async (req, res, next) => {
     }
 }
 
+//get survey
 export const getSurvey = async (req, res, next) => {
     try {
         const survey = await Surveys.findById(req.params.id)
@@ -92,6 +93,7 @@ export const getSurvey = async (req, res, next) => {
     }
 }
 
+//get surveys
 export const getSurveys = async (req, res, next) => {
     try {
         const surveys = await Surveys.find().sort({ $natural: -1 })
@@ -127,6 +129,15 @@ export const getMySurveys = async (req, res, next) => {
     try {
         const mysurveys = await Surveys.find({ created: `${req.params.created}` })
         res.status(200).json(mysurveys)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getMySurveyHistory = async (req,res, next) => {
+    try {
+        const mysurveyhistory = await Surveys.find({userId:`${req.params.userId}` })
+        res.status(200).json(mysurveyhistory)
     } catch (error) {
         next(error)
     }

@@ -1,6 +1,6 @@
 import "./surveysingle.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightLong, faCheckDouble, faCheckCircle, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faRightLong, faCheck, faCheckDouble, faCheckCircle, faTriangleExclamation, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
@@ -8,13 +8,13 @@ import useFetch from '../../../hooks/useFetch';
 import ProgressBar from "@ramonak/react-progress-bar";
 import moment from 'moment';
 import axios from 'axios';
-
+import Sidebar from '../sidebar/sidebar';
 
 const SurveySingle = () => {
     const user = useContext(AuthContext);
     const location = useLocation();
     const surveyId = location.pathname.split("/")[2];
- 
+
     const { data } = useFetch(`https://api.onchainsurveys.com/api/surveys/${surveyId}`);
 
 
@@ -35,6 +35,7 @@ const SurveySingle = () => {
             return obj.userId
         }
     });
+
 
     filtered && filtered[0]?.votes?.map((gg, ff) => {
         {
@@ -57,13 +58,14 @@ const SurveySingle = () => {
 
 
     const handleChange = (e) => {
-        setRatings((prev) => ({ ...prev, [e.target.id]: { [e.target.name]: e.target.value } }));
+        setRatings((prev) => ({ ...prev, [e.target.name]: { [e.target.id]: e.target.value } }));
 
     }
 
     const rating = {
         ...ratings
     }
+ 
 
     // Sum Rating
     let sumRating = 0;
@@ -82,18 +84,17 @@ const SurveySingle = () => {
         return datum / 1000;
     }
 
-    const left = moment(data.startDate).format("YYYY-MM-DD HH:mm:ss");
     const right = moment(data.endDate).format("YYYY-MM-DD HH:mm:ss");
     const now = moment().format("YYYY-MM-DD hh:mm:ss");
 
     const handleClick = async e => {
         e.preventDefault();
 
-        try { 
+        try {
             const res = await axios.put(`https://api.onchainsurveys.com/api/surveys/ratings/${surveyId}/${user.user._id}/`, rating);
 
-            if (res.status === 200) alert("Your vote has been saved");
-            window.location.reload(); 
+            if (res.status === 200) alert("Your vote has been saved.");
+            window.location.reload();
 
         } catch (error) {
             console.log(error)
@@ -110,7 +111,6 @@ const SurveySingle = () => {
 
         const res = await axios.put(`https://api.onchainsurveys.com/api/surveys/${surveyId}/`, data);
 
-        console.log(res)
 
         if (res.status == 200) {
             alert("Successful")
@@ -125,16 +125,8 @@ const SurveySingle = () => {
             {user.user === null ?
                 <div className="userDetails">
                     <div className="userContainer">
-                        <div className="sidebar">
-                            <h2>Welcome </h2>
-                            <ul>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to="/surveys/"> All Surveys</Link></li>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to="#"> Open Surveys</Link></li>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to="/login"> Login</Link></li>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to="/register"> Register</Link></li>
-                            </ul>
-                        </div>
-
+                    <Sidebar _id={user.user === null ? null : user.user._id} username={user.user === null ? null : user.user.username} />
+ 
                         <div className="content">
                             <div className="surveyConten">
                                 <h1 style={{ fontFamily: "Montserrat", fontSize: "30px", color: '#1a1a1a' }}>About Survey</h1>
@@ -185,7 +177,7 @@ const SurveySingle = () => {
 
                                                                                                                 return (
                                                                                                                     <>
-                                                                                                                        <div> {OptionRating == gg[item][dd] ? "" : ""}</div>
+                                                                                                                        <div> {keyOption == item && OptionKey == dd ? <FontAwesomeIcon style={{ color: "#c31421" }} icon={faRightLong} /> : false} </div>
                                                                                                                     </>
                                                                                                                 )
                                                                                                             })
@@ -201,23 +193,26 @@ const SurveySingle = () => {
                                                                             })
                                                                             }
 
-                                                                            <input disabled={data.status === 0 ? "disabled" : false} onChange={handleChange} name={keyOption} id={OptionKey} value={OptionName.rating + 1} type="radio" />  {OptionName.Option}
+                                                                            {filtered.length > 0 ? false : <input disabled={data.status === 0 || now > right ? "disabled" : false} onChange={handleChange} name={keyOption} id={OptionKey} value={OptionName.rating + 1} type="radio" />} {OptionName.Option}
                                                                         </label>
-                                                                        {filtered.length < 1 ? '' : <ProgressBar style={{ marginTop: 10 }} bgColor="#c31421" completed={Math.trunc(ratingEnd)} />}
+                                                                        {now < right ?
+                                                                            <>
+                                                                                {filtered.length < 1 ? <>  </> : <> <ProgressBar style={{ marginTop: 10 }} bgColor="#c31421" completed={Math.trunc(ratingEnd)} /></>}
 
+                                                                            </> :
+
+                                                                            <>
+                                                                                <ProgressBar style={{ marginTop: 10 }} bgColor="#c31421" completed={Math.trunc(ratingEnd)} />
+                                                                            </>
+
+                                                                        }
                                                                     </div>
-
-
                                                                 </>
                                                             )
                                                         })
-
                                                         }
-
                                                     </div>
-
                                                 )
-
                                             })}
 
                                         </form>
@@ -243,16 +238,9 @@ const SurveySingle = () => {
                 :
                 <div className="userDetails">
                     <div className="userContainer">
-                        <div className="sidebar">
-                            <h2>Welcome {user.username}</h2>
-                            <ul>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to={`/user/${user.user._id}`}> My Profile</Link></li>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to="#"> Update Password</Link></li>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to="/surveys/mysurveys"> My Surveys</Link></li>
-                                <li><FontAwesomeIcon icon={faRightLong} /><Link to="#"> Survey History</Link></li>
-                            </ul>
-                        </div>
-
+                        
+                        <Sidebar _id={user.user === null ? null : user.user._id} username={user.user === null ? null : user.user.username} />
+ 
                         <div className="content">
                             <div className="surveyConten">
                                 <h1 style={{ fontFamily: "Montserrat", fontSize: "30px", color: '#1a1a1a' }}>About Survey</h1>
@@ -294,6 +282,7 @@ const SurveySingle = () => {
 
                                                                                 return (
                                                                                     <>
+
                                                                                         {
                                                                                             Object.keys(gg).map((item, k) => {
                                                                                                 return (
@@ -303,7 +292,7 @@ const SurveySingle = () => {
 
                                                                                                                 return (
                                                                                                                     <>
-                                                                                                                        <div> {OptionRating == gg[item][dd] ? "" : ""}</div>
+                                                                                                                        <div> {keyOption == item && OptionKey == dd ? <FontAwesomeIcon style={{ color: "#c31421" }} icon={faRightLong} /> : false} </div>
                                                                                                                     </>
                                                                                                                 )
                                                                                                             })
@@ -319,22 +308,28 @@ const SurveySingle = () => {
                                                                             })
                                                                             }
 
-                                                                            <input disabled={data.status === 0 ? "disabled" : false} onChange={handleChange} name={keyOption} id={OptionKey} value={OptionName.rating + 1} type="radio" />  {OptionName.Option}
+                                                                            {filtered.length > 0 ? false : <input disabled={data.status === 0 || now > right ? "disabled" : false} onChange={handleChange} name={keyOption} id={OptionKey} value={OptionName.rating + 1} type="radio" />} {OptionName.Option}
+
                                                                         </label>
-                                                                        {filtered.length < 1 ? '' : <ProgressBar style={{ marginTop: 10 }} bgColor="#c31421" completed={Math.trunc(ratingEnd)} />}
+                                                                        {now < right ?
+                                                                            <>
+                                                                                {filtered.length < 1 ? <>  </> : <> <ProgressBar style={{ marginTop: 10 }} bgColor="#c31421" completed={Math.trunc(ratingEnd)} /></>}
+
+                                                                            </> :
+
+                                                                            <>
+                                                                                <ProgressBar style={{ marginTop: 10 }} bgColor="#c31421" completed={Math.trunc(ratingEnd)} />
+                                                                            </>
+
+                                                                        }
 
                                                                     </div>
-
-
                                                                 </>
                                                             )
                                                         })
-
                                                         }
-
                                                     </div>
                                                 )
-
                                             })}
 
                                         </form>
@@ -348,7 +343,11 @@ const SurveySingle = () => {
                                                     </>
                                                 }
                                             </>
-                                            : <> <span style={{ fontFamily: 'Montserrat', color: "#c31421" }}>This survey has expired</span>  </>
+                                            :
+                                            <>
+                                                <span style={{ fontFamily: 'Montserrat', color: "#c31421" }}>This survey has expired</span>
+
+                                            </>
                                         }
                                     </div>
 

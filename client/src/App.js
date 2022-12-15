@@ -10,6 +10,7 @@ import SingleSurvey from "./pages/surveys/SingleSurvey";
 import SurveyPending from "./pages/surveys/SurveyPending";
 import MySurveys from "./pages/surveys/MySurveys";
 import SurveyOpened from "./pages/surveys/SurveysOpened";
+import MySurveyHistory from "./pages/surveys/SurveyHistory";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
         <Route path="/surveys/pending" element={<SurveyPending />} />
         <Route path="/surveys/opened" element={<SurveyOpened />} />
         <Route path="/surveys/mysurveys" element={<MySurveys />} />
+        <Route path="/surveys/surveyhistory" element={<MySurveyHistory/>} />
       </Routes>
     </BrowserRouter>
   );

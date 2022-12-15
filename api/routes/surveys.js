@@ -1,7 +1,7 @@
 import express from "express";
 import Surveys from "../models/Surveys.js"
 import { createError } from "../utils/error.js";
-import { createSurvey, updateSurvey, deleteSurvey, getSurvey, getSurveys, updateRatings, getPendings, getOpened, getMySurveys } from "../controllers/surveys.js";
+import { createSurvey, updateSurvey, deleteSurvey, getSurvey, getSurveys, updateRatings, getPendings, getOpened, getMySurveys, getMySurveyHistory } from "../controllers/surveys.js";
 import rateLimit from 'express-rate-limit';
 const router = express.Router();
 
@@ -68,4 +68,11 @@ router.get("/getmysurvey/:created", apiLimitMin, getMySurveys, (req, res) => {
     req.apiLimitMin;
     res.status(429).json();
 })
+
+//GET MY HISTORY
+router.get("/getmyhistory/:userid", apiLimitMin, getMySurveyHistory, (req,res) => {
+    req.apiLimitMin;
+    res.status(429).json();
+})
+
 export default router
