@@ -14,6 +14,7 @@ Navigate to the api folder from your terminal screen and run the following comma
 
 <pre>
 npm i
+npm start
 </pre>
 
 <h3>Step 3: Mongodb</h3>
