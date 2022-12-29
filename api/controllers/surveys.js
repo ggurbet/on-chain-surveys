@@ -16,10 +16,11 @@ export const createSurvey = async (req, res, next) => {
 
 //update survey
 export const updateSurvey = async (req, res, next) => {
+     
     try {
         const updatedSurvey = await Surveys.findByIdAndUpdate(
             req.params.id,
-            { $set: req.body },
+            { $set: {status:req.body.status} },
             { new: true }
         );
         res.status(200).json(updatedSurvey)
