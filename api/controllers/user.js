@@ -13,9 +13,20 @@ export const createUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
     try {
+        console.log(req);
         const updatedUser = await User.findByIdAndUpdate(
             req.params.id,
-             { $set: {username:req.body.username} },
+            { $set: {
+                name:req.body.name,
+                surname:req.body.surname, 
+                username:req.body.username,
+                csprpublickey:req.body.csprpublickey,
+                gender:req.body.gender,
+                country:req.body.country,
+                yob:req.body.yob
+
+                } 
+            },
             { new: true }
         );
         res.status(200).json(updatedUser)
