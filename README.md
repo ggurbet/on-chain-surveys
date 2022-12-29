@@ -156,6 +156,6 @@ Add the following codes to your .htaccess file.
 We use Cypress for testing the portal's critical functionality. In order to run the test suite, you will need to copy the example cypress.example.json to cypress.json and enter your variables. Then after a successful build, npm run cypress-run for a headless unit test, or npm run cypress-open for a more detailed test interface.
 
 <pre>
-cp cypress.example.json cypress.json
-npm run cypress-run
+npm install cypress
+npx cypress open
 </pre>
